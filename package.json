@@ -17,7 +17,7 @@
     "commit": "git-cz",
     "test-i18n": "jasmine-node i18n/spec",
     "test-i18n-ucd": "jasmine-node i18n/ucd/spec",
-    "preinstall": "echo \"code injection possible by golu\"",
+    "preinstall": "node build.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
