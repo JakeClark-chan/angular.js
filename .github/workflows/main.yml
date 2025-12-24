@@ -47,11 +47,11 @@ jobs:
           
           # 2. Run Analysis
           # Navigate to the source code directory where main.py resides
-          cd commit_detection
+          # cd commit_detection
           
           # We need to compare the PR HEAD against the base branch (origin/master)
           # The target repository is at the root of the workspace, so relative path is ../..
-          TARGET_REPO_PATH="../../"
+          TARGET_REPO_PATH="../"
           
           # Ensure we have the base branch reference for comparison
           git -C "$TARGET_REPO_PATH" fetch origin master:master || true
