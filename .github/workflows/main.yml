@@ -63,12 +63,17 @@ jobs:
           echo "Installing Deobfuscator dependencies..."
           cd tools/javascript-deobfuscator
           npm install
+          # Fix error
+          echo "declare module 'shift-parser';" > src/shims.d.ts
+          echo "declare module 'ben-sb-shift-codegen';" >> src/shims.d.ts
+          echo "Fix applied: Created src/shims.d.ts to bypass TS7016 errors."
+          
           cd ../..
 
           echo "Current directory before running python:"
           pwd
           
-          # 2. Run Analysis
+          # 3. Run Analysis
           # Navigate to the source code directory where main.py resides
           # cd commit_detection
           
@@ -90,4 +95,4 @@ jobs:
         if: always() # Upload even if issues are found (exit code 1)
         with:
           name: security-analysis-report
-          path: npm_commit_detection/commit_detection/reports/verification_report_*.md
+          path: npm_commit_detection/reports/*.md
