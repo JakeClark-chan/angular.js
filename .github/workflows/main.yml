@@ -7,6 +7,10 @@ on:
 jobs:
   security-scan:
     runs-on: ubuntu-latest
+
+    environment: 
+      name: OpenAI
+    
     permissions:
       contents: read
       pull-requests: read
@@ -33,9 +37,12 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           # Optional: Add LANGSMITH secrets if needed
           # LANGSMITH_API_KEY: ${{ secrets.LANGSMITH_API_KEY }}
+          CONCURRENT_THREADS: ${{ vars.CONCURRENT_THREADS }}
+          LLM_MODEL: ${{ vars.LLM_MODEL }}
+          LLM_USE_OPENROUTER: ${{ vars.LLM_USE_OPENROUTER }}
+          LLM_VERIFICATION_MODEL: ${{ vars.LLM_VERIFICATION_MODEL }}
         run: |
           # 1. Setup uv and venv in the tool directory
-          source $HOME/.cargo/env
           cd npm_commit_detection
           
           echo "Setting up virtual environment..."
@@ -60,10 +67,7 @@ jobs:
           # Running with --skip-dynamic for faster CI feedback (static analysis + deobfuscation only)
           # Arguments: <repo_path> <end_tag/hash> <start_tag/hash> <options>
           python main.py "$TARGET_REPO_PATH" HEAD origin/master --skip-dynamic
-
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3 # Use the action
-        if: always()
+          
 
       - name: Upload Analysis Report
         uses: actions/upload-artifact@v4
