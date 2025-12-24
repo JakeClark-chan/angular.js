@@ -61,6 +61,9 @@ jobs:
           # Arguments: <repo_path> <end_tag/hash> <start_tag/hash> <options>
           python main.py "$TARGET_REPO_PATH" HEAD origin/master --skip-dynamic
 
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3 # Use the action
+
       - name: Upload Analysis Report
         uses: actions/upload-artifact@v4
         if: always() # Upload even if issues are found (exit code 1)
