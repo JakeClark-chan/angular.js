@@ -27,13 +27,20 @@ jobs:
           repository: JakeClark-chan/npm_commit_detection
           path: npm_commit_detection
           ref: master
+          submodules: recursive # Fetch submodules
 
       - name: Install uv
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
 
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+
       - name: Setup Environment and Scan
         env:
-          # OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           # Optional: Add LANGSMITH secrets if needed
           # LANGSMITH_API_KEY: ${{ secrets.LANGSMITH_API_KEY }}
@@ -51,6 +58,12 @@ jobs:
           
           echo "Installing dependencies..."
           uv pip install -r requirements.txt
+
+          # 2. Setup Deobfuscator Tool
+          echo "Installing Deobfuscator dependencies..."
+          cd commit_detection/tools/javascript-deobfuscator
+          npm install
+          cd ../..
           
           # 2. Run Analysis
           # Navigate to the source code directory where main.py resides
@@ -64,7 +77,6 @@ jobs:
           git -C "$TARGET_REPO_PATH" fetch origin master:master || true
           
           echo "Starting analysis..."
-          git submodule update --init --recursive
           # Running with --skip-dynamic for faster CI feedback (static analysis + deobfuscation only)
           # Arguments: <repo_path> <end_tag/hash> <start_tag/hash> <options>
           python main.py "$TARGET_REPO_PATH" HEAD origin/master --skip-dynamic
