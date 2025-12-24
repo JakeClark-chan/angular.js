@@ -74,4 +74,4 @@ jobs:
         if: always() # Upload even if issues are found (exit code 1)
         with:
           name: security-analysis-report
-          path: npm_commit_detection/commit_detection/analysis_report_*.md
+          path: npm_commit_detection/commit_detection/reports/verification_report_*.md
