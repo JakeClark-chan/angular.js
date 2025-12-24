@@ -89,7 +89,17 @@ jobs:
           # Arguments: <repo_path> <end_tag/hash> <start_tag/hash> <options>
           python main.py "$TARGET_REPO_PATH" HEAD origin/master --skip-dynamic
           
-
+      - name: Check Scan Verdict
+        run: |
+          # Tìm chuỗi cảnh báo trong tất cả các file report
+          # Nếu tìm thấy (-q nghĩa là quiet, tìm thấy trả về 0)
+          if grep -r "Verdict: 🚨 MALICIOUS" npm_commit_detection/reports/; then
+            echo "❌ CRITICAL: Malicious code detected in the report!"
+            # Đây là lệnh quan trọng nhất: Ép GitHub Actions fail
+            exit 1
+          else
+            echo "✅ Scan passed. No malicious verdict found."
+          fi
       - name: Upload Analysis Report
         uses: actions/upload-artifact@v4
         if: always() # Upload even if issues are found (exit code 1)
