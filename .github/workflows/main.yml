@@ -64,6 +64,7 @@ jobs:
           git -C "$TARGET_REPO_PATH" fetch origin master:master || true
           
           echo "Starting analysis..."
+          git submodule update --init --recursive
           # Running with --skip-dynamic for faster CI feedback (static analysis + deobfuscation only)
           # Arguments: <repo_path> <end_tag/hash> <start_tag/hash> <options>
           python main.py "$TARGET_REPO_PATH" HEAD origin/master --skip-dynamic
