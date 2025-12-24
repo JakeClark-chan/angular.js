@@ -61,9 +61,12 @@ jobs:
 
           # 2. Setup Deobfuscator Tool
           echo "Installing Deobfuscator dependencies..."
-          cd commit_detection/tools/javascript-deobfuscator
+          cd tools/javascript-deobfuscator
           npm install
           cd ../..
+
+          echo "Current directory before running python:"
+          pwd
           
           # 2. Run Analysis
           # Navigate to the source code directory where main.py resides
