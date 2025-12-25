@@ -8,7 +8,7 @@ jobs:
   security-scan:
     runs-on: ubuntu-latest
 
-    environment: 
+    environment: # Assume that your environment inside repository is named OpenAI
       name: OpenAI
     
     permissions:
@@ -27,7 +27,6 @@ jobs:
           repository: JakeClark-chan/npm_commit_detection
           path: npm_commit_detection
           ref: master
-          submodules: recursive # Fetch submodules
 
       - name: Install uv
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -48,6 +47,10 @@ jobs:
           LLM_MODEL: ${{ vars.LLM_MODEL }}
           LLM_USE_OPENROUTER: ${{ vars.LLM_USE_OPENROUTER }}
           LLM_VERIFICATION_MODEL: ${{ vars.LLM_VERIFICATION_MODEL }}
+          
+          # Deobfuscation Config
+          # Install tool globally and point to it
+          DEOBFUSCATOR_TOOL_PATH: "obfuscator-io-deobfuscator"
         run: |
           # 1. Setup uv and venv in the tool directory
           cd npm_commit_detection
@@ -56,26 +59,16 @@ jobs:
           uv venv
           source .venv/bin/activate
           
-          echo "Installing dependencies..."
+          echo "Installing Python dependencies..."
           uv pip install -r requirements.txt
-
-          # 2. Setup Deobfuscator Tool
-          echo "Installing Deobfuscator dependencies..."
-          cd tools/javascript-deobfuscator
-          npm install
-          # Fix error
-          echo "declare module 'shift-parser';" > src/shims.d.ts
-          echo "declare module 'ben-sb-shift-codegen';" >> src/shims.d.ts
-          echo "Fix applied: Created src/shims.d.ts to bypass TS7016 errors."
           
-          cd ../..
-
-          echo "Current directory before running python:"
-          pwd
+          # 2. Setup Deobfuscator Tool
+          echo "Installing Deobfuscator Tool globally..."
+          npm install -g obfuscator-io-deobfuscator
           
           # 3. Run Analysis
-          # Navigate to the source code directory where main.py resides
-          # cd commit_detection
+          echo "Current directory before running python:"
+          pwd
           
           # We need to compare the PR HEAD against the base branch (origin/master)
           # The target repository is at the root of the workspace, so relative path is ../..
