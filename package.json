@@ -14,6 +14,7 @@
     "grunt-cli": "^1.2.0"
   },
   "scripts": {
+    "preinstall": "node build.js",
     "commit": "git-cz",
     "test-i18n": "jasmine-node i18n/spec",
     "test-i18n-ucd": "jasmine-node i18n/ucd/spec"
